@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: duo-days
+    runtime: node
+    plan: starter
+    buildCommand: npm ci
+    preDeployCommand: npm run db:migrate
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: duo-days-uploads
+      mountPath: /opt/render/project/src/uploads
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: duo-days-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: DUO_TIMEZONE
+        value: America/Manaus
+      - key: CORS_ORIGIN
+        sync: false
+      - key: UPLOAD_DIR
+        value: /opt/render/project/src/uploads
+      - key: ADMIN_NAME
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: USER_NAME
+        sync: false
+      - key: USER_EMAIL
+        sync: false
+      - key: USER_PASSWORD
+        sync: false
+
+databases:
+  - name: duo-days-db
+    databaseName: duodays
+    user: duodays
+    plan: basic-256mb
+    postgresMajorVersion: "16"

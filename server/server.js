@@ -23,7 +23,7 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, { cors: { origin: env.corsOrigin, credentials: true } });
 
-if (env.nodeEnv === 'production') app.set('trust proxy', 1);
+if (env.nodeEnv === 'production' || process.env.CODESPACES === 'true') app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
